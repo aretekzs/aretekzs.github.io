@@ -18,16 +18,10 @@ export default defineConfig({
   ],
   markdown: {
     remarkPlugins: [
-      remarkToc,
-      [
-        remarkCollapse,
-        {
-          test: "Table of contents",
-        },
-      ],
+      [remarkToc, { heading: 'Table of contents' }]
     ],
     shikiConfig: {
-      theme: "one-dark-pro",
+      theme: "nord", // update this
       wrap: true,
     },
   },

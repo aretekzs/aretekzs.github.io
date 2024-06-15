@@ -26,7 +26,7 @@ const {
   tags,
 } = post.data;
 
-const { Content } = await post.render();
+const { Content, headings } = await post.render();
 
 const ogImageUrl = typeof ogImage === "string" ? ogImage : ogImage?.src;
 const ogUrl = new URL(
@@ -44,6 +44,8 @@ const layoutProps = {
   ogImage: ogUrl,
   scrollSmooth: true,
 };
+
+const filteredHeadings = headings?.filter(h => h.depth === 2) || [];
 ---
 
 <Layout {...layoutProps}>
@@ -53,7 +55,7 @@ const layoutProps = {
     <div class="progress-bar h-1 w-0 bg-skin-accent" id="myBar"></div>
   </div> -->
 
-  <div class="mx-auto flex w-full max-w-3xl justify-start px-2">
+  <div class="mx-auto flex w-full max-w-4xl justify-start px-2">
     <button
       class="focus-outline mb-2 mt-8 flex hover:opacity-75"
       onclick="(() => (history.length === 1) ? window.location = '/' : history.back())()"
@@ -73,13 +75,11 @@ const layoutProps = {
       size="lg"
       className="my-2"
     />
-    <article id="article" role="article" class="prose mx-auto mt-8 max-w-3xl">
+    <article id="article" role="article" class="prose mx-auto mt-8 max-w-4xl">
       <Content />
     </article>
 
-    <ul class="my-8">
-      {tags.map(tag => <Tag tag={slugifyStr(tag)} />)}
-    </ul>
+    <ul class="my-8"></ul>
 
     <div
       class="flex flex-col-reverse items-center justify-between gap-6 sm:flex-row-reverse sm:items-end sm:gap-4"
@@ -95,16 +95,15 @@ const layoutProps = {
         </svg>
         <span>Back to Top</span>
       </button>
-
-      <ShareLinks />
-    </div>
   </main>
+  <!--<Toc headings={filteredHeadings} />-->
+  </div>
   <Footer />
 </Layout>
 
 <style>
   main {
-    @apply mx-auto w-full max-w-3xl px-4 pb-12;
+    @apply mx-auto w-full max-w-4xl px-4 pb-12;
   }
   .post-title {
     @apply text-2xl font-semibold text-skin-accent;
@@ -112,6 +111,7 @@ const layoutProps = {
 </style>
 
 <script is:inline>
+  // JavaScript for progress bar, heading links, and copy buttons as before
   /** Create a progress indicator
    *  at the top */
   function createProgressBar() {
@@ -154,15 +154,15 @@ const layoutProps = {
   /** Attaches links to headings in the document,
    *  allowing sharing of sections easily */
   function addHeadingLinks() {
-    let headings = Array.from(document.querySelectorAll("h2, h3, h4, h5, h6"));
+    let headings = Array.from(document.querySelectorAll("h2"));
     for (let heading of headings) {
       heading.classList.add("group");
       let link = document.createElement("a");
-      link.innerText = "#";
-      link.className = "heading-link hidden group-hover:inline-block ml-2";
+      link.innerText = "# ";
+      link.className = "heading-link group-hover:inline-block ml-2";
       link.href = "#" + heading.id;
       link.ariaHidden = "true";
-      heading.appendChild(link);
+      heading.prepend(link);
     }
   }
   addHeadingLinks();
@@ -219,3 +219,4 @@ const layoutProps = {
   }
   backToTop();
 </script>
+
