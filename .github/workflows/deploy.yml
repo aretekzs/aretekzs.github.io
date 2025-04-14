@@ -27,6 +27,5 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: shalzz/zola-deploy-action@master
         env:
-          PAGES_BRANCH: gh-pages  # Branch to deploy to GitHub Pages
           TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub Token for authentication
 
