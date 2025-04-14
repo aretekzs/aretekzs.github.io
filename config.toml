@@ -20,3 +20,4 @@ header_nav = [
     { url = "/", name_en = "/home/" },
     { url = "/posts", name_en = "/posts/" }
 ]
+favicon = "favicon.svg"
