@@ -13,7 +13,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-        - name: Initialize submodules
+      - name: Initialize submodules
         run: git submodule update --init --recursive
 
       - name: Set up Zola
