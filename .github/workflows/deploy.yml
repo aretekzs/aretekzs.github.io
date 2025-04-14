@@ -10,15 +10,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repository with submodules
         uses: actions/checkout@v4
-
-      - name: Initialize submodules
-        run: git submodule set-url themes/anemone https://github.com/Speyll/anemone.git
+        with:
+          submodules: recursive  # This will properly initialize and update submodules
 
       - name: Set up Zola
         run: |
           curl -s -L https://github.com/getzola/zola/releases/download/v0.13.0/zola-v0.13.0-x86_64-unknown-linux-gnu.tar.gz | sudo tar xvzf - -C /usr/local/bin
+
+      - name: Verify theme exists
+        run: |
+          ls -la themes/anemone/
+          cat themes/anemone/theme.toml
 
       - name: Build site with Zola
         run: |
@@ -27,5 +31,5 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: shalzz/zola-deploy-action@master
         env:
-          TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub Token for authentication
-
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PAGES_BRANCH: gh-pages  # Explicitly set the target branch
