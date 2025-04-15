@@ -14,6 +14,7 @@
         <link rel="stylesheet" href="https://raw.githack.com/Speyll/suCSS/main/suCSS-min.css" crossorigin="anonymous">
         <link rel="stylesheet" href="https://arete06.com/css/style.css">
         <link rel="stylesheet" href="https://arete06.com/css/custom.css">
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&display=swap" rel="stylesheet">
 
         <!-- Add favicon with appropriate sizes -->
         <link rel="icon" href="https:&#x2F;&#x2F;arete06.com/favicon.svg">
@@ -126,6 +127,12 @@
 <p>Since RFC 6455 [<sup class="footnote-reference"><a href="#1">1</a></sup>] landed in 2011, WebSockets have become a core part of many real-time applications.</p>
 <p>But here’s a paradox: in theory, traditional HTTP vulnerabilities are expected to apply to WebSockets [<sup class="footnote-reference"><a href="#2">2</a></sup>][<sup class="footnote-reference"><a href="#3">3</a></sup>][<sup class="footnote-reference"><a href="#4">4</a></sup>][<sup class="footnote-reference"><a href="#5">5</a></sup>][<sup class="footnote-reference"><a href="#6">6</a></sup>]. Yet in practice, public reports and CVEs show near-zero WebSocket-specific server-side flaws. This raises the question: are systems truly secure, or is the tooling for WebSocket security still underdeveloped?</p>
 <p>This work aims to address that gap by proposing a new approach on how to fuzz WebSocket messages, and also move past the manual analysis required by most existing tools. To achieve this, the Backslash Powered Scanner extension for Burp Suite was enhanced to support WebSocket fuzzing.</p>
+<center>
+  <video src="/videos/demo.mp4" controls style="max-width: 90%; height: auto;"></video>
+</center>
+<div class="centered" style="text-align: center; font-style: italic;">
+Demo
+</div>
 <h2 id="brief-explanation-of-the-websocket-protocol"><a href="https://arete06.com/posts/fuzzing-ws/#brief-explanation-of-the-websocket-protocol">Brief Explanation of the WebSocket Protocol</a></h2>
 <p>This article will not provide a detailed walkthrough of the WebSocket protocol. If you need that level of depth, please refer to RFC 6455 [<sup class="footnote-reference"><a href="#1">1</a></sup>].</p>
 <p>HTTP is inherently a request-response protocol. The client sends a request, the server replies, and that cycle repeats. This design makes it easy for security tools to insert payloads, observe responses, and flag anomalies. WebSockets, on the other hand, depart entirely from this paradigm.</p>
@@ -151,7 +158,7 @@
 <p>A common limitation persists across all tools: the lack of automated response analysis. Payloads must be manually crafted, and results manually reviewed. But before meaningful automation can be achieved, it is essential to first establish methods for detecting and handling WebSocket messages correctly.</p>
 <h2 id="how-to-handle-websocket-messages"><a href="https://arete06.com/posts/fuzzing-ws/#how-to-handle-websocket-messages">How To Handle WebSocket Messages</a></h2>
 <p>As stated, WebSockets are complicated to fuzz. Their asynchronous, stateful nature breaks the usual assumptions that security tools rely on.</p>
-<p>To work around these challenges, this approach focuses on reliability and clarity. A new WebSocket connection is opened for payload case to avoid side effects from earlier payloads that might affect the application’s state. If necessary (for example, with Socket.IO implementations), the scanner can wait a bit or send prerequisite messages before injecting the actual payload. Once the payload is sent, all incoming messages are captured during a configurable time window.</p>
+<p>To work around these challenges, this approach focuses on reliability and clarity. A new WebSocket connection is opened for each payload (to avoid side effects from earlier payloads that might affect the application’s state). If necessary (for example, with Socket.IO implementations), the scanner can wait a bit or send prerequisite messages before injecting the actual payload. Once the payload is sent, all incoming messages are captured during a configurable time window.</p>
 <p>Responses are stored in a structured format, including metadata such as message type (text or binary) and response time. This structured approach simplifies message correlation and enables more accurate behavioral analysis.</p>
 <p>The following visual representation may offer a clearer view:</p>
 <center><img src="/images/ws_mermaid_chart.png" alt="WebSocket fuzzing flow" title="WebSocket fuzzing flow" style="max-width: 60%; height: auto;"></center> <div class="centered" style="text-align: center; font-style: italic;">
@@ -169,22 +176,25 @@
 <p>As stated, the Backslash Powered Scanner extension takes advantage of predefined metrics to compare responses. But metrics used for HTTP traffic cannot be directly applied to WebSockets due to the fundamental differences between the protocols. As such, as a starting point, and with the flexibility to expand or refine these metrics in the future, I chose the following:</p>
 <ul>
 <li>the total number of messages received.</li>
-<li>the sequence of received message types (text or binary), converted into a unique numeric representation.</li>
-<li>the individual lengths of received messages, concatenated and transformed into a numerical value.</li>
-<li>the number of spaces in each message, calculated similarly to message length.</li>
-<li>the number of HTML tags in each message, also calculated similarly to message length.</li>
+<li>the sequence of received message types (text or binary)</li>
+<li>the individual lengths of received messages</li>
+<li>the number of spaces in each message</li>
+<li>the number of HTML tags in each message</li>
 </ul>
 <p>This ensures that WebSocket responses are evaluated based on meaningful attributes rather than traditional HTTP metrics like status codes and headers.</p>
 <h4 id="usage-and-automation"><a href="https://arete06.com/posts/fuzzing-ws/#usage-and-automation">Usage and Automation</a></h4>
 <p>Since Burp's Montoya API is still not as mature for WebSocket traffic as it is for HTTP, it's not yet straightforward to automatically fuzz all fields within a message. That said, some automation was manually implemented and can be expanded in the future. For now, and somewhat as a workaround, usage works as follows:</p>
 <ul>
 <li>Select a WebSocket message and launch the extension.</li>
-<li>If the message is in JSON or Socket.IO format, the extension will automatically fuzz all fields.</li>
-<li>If it's not, you can wrap the desired insertion point with FUZZ, and the extension will target that area.</li>
+<li>If the message is in JSON or Socket.IO format, the extension will automatically fuzz all fields and JSON escape the payloads.</li>
+<li>If it's not, you can wrap the desired insertion point with <code>FUZZ</code>, and the extension will target that area.</li>
 <li>If no marker is provided, the extension will fuzz the entire message as a single unit.</li>
 </ul>
+<p>In the settings, the user can configure the desired time window (in seconds) for listening to incoming messages. Additionally, it is possible to customize a delay (in milliseconds) before sending the payload, as well as define any prerequisite messages to be sent prior to the payload. If more than one message is required, these should be separated by <code>FUZZ</code>.</p>
+<center><img src="/images/ws_settings.png" alt="Settings example" title="Settings example" style="max-width: 100%; height: auto;"></center> <div class="centered" style="text-align: center; font-style: italic;">
+<p>Settings example</div></p>
 <h2 id="future-work-and-challenges"><a href="https://arete06.com/posts/fuzzing-ws/#future-work-and-challenges">Future Work and Challenges</a></h2>
-<p>There are several areas for improvement. Unfortunately, due to the inherent complexity of WebSockets, it would be impossible to implement everything in the initial release. I chose to build a solid foundation first, with plans for updates over time. That said, here are a few key points to consider:</p>
+<p>There are several areas for improvement. Unfortunately, due to the inherent complexity of WebSockets, it would be impossible to implement everything and take all scenarios into account in the initial release. I chose to build a solid foundation first, with plans for updates over time. That said, here are a few key points to consider:</p>
 <ul>
 <li>Allow the user to open connections directly from a <code>ws://</code> or <code>wss://</code> URL, in addition to the current method of using the upgrade request.</li>
 <li>Allow the user to reuse the same connection, in addition to the current method of creating of creating a new connection for each payload.</li>

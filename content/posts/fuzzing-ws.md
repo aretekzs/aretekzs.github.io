@@ -15,6 +15,14 @@ But here’s a paradox: in theory, traditional HTTP vulnerabilities are expected
 
 This work aims to address that gap by proposing a new approach on how to fuzz WebSocket messages, and also move past the manual analysis required by most existing tools. To achieve this, the Backslash Powered Scanner extension for Burp Suite was enhanced to support WebSocket fuzzing.
 
+<center>
+  <video src="/videos/demo.mp4" controls style="max-width: 90%; height: auto;"></video>
+</center>
+<div class="centered" style="text-align: center; font-style: italic;">
+Demo
+</div>
+
+
 ## [Brief Explanation of the WebSocket Protocol](#brief-explanation-of-the-websocket-protocol)
 
 This article will not provide a detailed walkthrough of the WebSocket protocol. If you need that level of depth, please refer to RFC 6455 [[^1]].
@@ -61,7 +69,7 @@ A common limitation persists across all tools: the lack of automated response an
 
 As stated, WebSockets are complicated to fuzz. Their asynchronous, stateful nature breaks the usual assumptions that security tools rely on. 
 
-To work around these challenges, this approach focuses on reliability and clarity. A new WebSocket connection is opened for payload case to avoid side effects from earlier payloads that might affect the application’s state. If necessary (for example, with Socket.IO implementations), the scanner can wait a bit or send prerequisite messages before injecting the actual payload. Once the payload is sent, all incoming messages are captured during a configurable time window.
+To work around these challenges, this approach focuses on reliability and clarity. A new WebSocket connection is opened for each payload (to avoid side effects from earlier payloads that might affect the application’s state). If necessary (for example, with Socket.IO implementations), the scanner can wait a bit or send prerequisite messages before injecting the actual payload. Once the payload is sent, all incoming messages are captured during a configurable time window.
 
 Responses are stored in a structured format, including metadata such as message type (text or binary) and response time. This structured approach simplifies message correlation and enables more accurate behavioral analysis.
 
@@ -92,10 +100,10 @@ It has demonstrated considerable effectiveness in fuzzing traditional HTTP-based
 As stated, the Backslash Powered Scanner extension takes advantage of predefined metrics to compare responses. But metrics used for HTTP traffic cannot be directly applied to WebSockets due to the fundamental differences between the protocols. As such, as a starting point, and with the flexibility to expand or refine these metrics in the future, I chose the following:
 
 - the total number of messages received.
-- the sequence of received message types (text or binary), converted into a unique numeric representation.
-- the individual lengths of received messages, concatenated and transformed into a numerical value.
-- the number of spaces in each message, calculated similarly to message length.
-- the number of HTML tags in each message, also calculated similarly to message length.
+- the sequence of received message types (text or binary)
+- the individual lengths of received messages
+- the number of spaces in each message
+- the number of HTML tags in each message
 
 This ensures that WebSocket responses are evaluated based on meaningful attributes rather than traditional HTTP metrics like status codes and headers.
 
@@ -104,13 +112,19 @@ This ensures that WebSocket responses are evaluated based on meaningful attribut
 Since Burp's Montoya API is still not as mature for WebSocket traffic as it is for HTTP, it's not yet straightforward to automatically fuzz all fields within a message. That said, some automation was manually implemented and can be expanded in the future. For now, and somewhat as a workaround, usage works as follows:
 
 - Select a WebSocket message and launch the extension.
-- If the message is in JSON or Socket.IO format, the extension will automatically fuzz all fields.
-- If it's not, you can wrap the desired insertion point with FUZZ, and the extension will target that area.
+- If the message is in JSON or Socket.IO format, the extension will automatically fuzz all fields and JSON escape the payloads.
+- If it's not, you can wrap the desired insertion point with `FUZZ`, and the extension will target that area.
 - If no marker is provided, the extension will fuzz the entire message as a single unit.
+
+In the settings, the user can configure the desired time window (in seconds) for listening to incoming messages. Additionally, it is possible to customize a delay (in milliseconds) before sending the payload, as well as define any prerequisite messages to be sent prior to the payload. If more than one message is required, these should be separated by `FUZZ`.
+
+<center><img src="/images/ws_settings.png" alt="Settings example" title="Settings example" style="max-width: 100%; height: auto;"></center> <div class="centered" style="text-align: center; font-style: italic;">
+
+Settings example</div>
 
 ## [Future Work and Challenges](#future-work-and-challenges)
 
-There are several areas for improvement. Unfortunately, due to the inherent complexity of WebSockets, it would be impossible to implement everything in the initial release. I chose to build a solid foundation first, with plans for updates over time. That said, here are a few key points to consider:
+There are several areas for improvement. Unfortunately, due to the inherent complexity of WebSockets, it would be impossible to implement everything and take all scenarios into account in the initial release. I chose to build a solid foundation first, with plans for updates over time. That said, here are a few key points to consider:
 
 - Allow the user to open connections directly from a `ws://` or `wss://` URL, in addition to the current method of using the upgrade request.
 - Allow the user to reuse the same connection, in addition to the current method of creating of creating a new connection for each payload.
