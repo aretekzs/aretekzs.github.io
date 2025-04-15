@@ -1,4 +1,0 @@
-User-agent: *
-Disallow:
-Allow: /
-Sitemap: https://arete06.com/sitemap.xml
