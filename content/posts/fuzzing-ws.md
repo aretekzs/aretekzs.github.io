@@ -15,6 +15,8 @@ But here’s a paradox: in theory, traditional HTTP vulnerabilities are expected
 
 This work aims to address that gap by proposing a new approach on how to fuzz WebSocket messages, and also move past the manual analysis required by most existing tools. To achieve this, the Backslash Powered Scanner extension for Burp Suite was enhanced to support WebSocket fuzzing.
 
+You can find it on [GitHub](https://github.com/PortSwigger/backslash-powered-scanner/).
+
 <center>
   <video src="/videos/demo.mp4" controls style="max-width: 90%; height: auto;"></video>
 </center>
@@ -131,6 +133,7 @@ There are several areas for improvement. Unfortunately, due to the inherent comp
 - Improve the response analysis metrics.
 - Add lower-level metrics (e.g., opcodes) when Burp’s Montoya API supports it.
 - Add support for binary messages in some capacity.
+- Improved JSON parsing, particularly for array handling
 
 In the real world, WebSockets are chaotic. For example, some implementations send messages to the server in JSON, and the server replies with compressed binary messages. Others require each message to include a timestamp and a signature. Supporting all these scenarios is no small task.
 
