@@ -15,6 +15,8 @@ But here’s a paradox: in theory, traditional HTTP vulnerabilities are expected
 
 This work aims to address that gap by proposing a new approach on how to fuzz WebSocket messages, and also move past the manual analysis required by most existing tools. To achieve this, the Backslash Powered Scanner extension for Burp Suite was enhanced to support WebSocket fuzzing.
 
+In short, our approach allows sending prerequisite messages (e.g. for Socket.IO protocol negotiation) and capturing all resulting messages within a configurable window, enabling correlation between sent and received messages for effective analysis.
+
 You can find it on [GitHub](https://github.com/PortSwigger/backslash-powered-scanner/).
 
 <center>
@@ -71,9 +73,9 @@ A common limitation persists across all tools: the lack of automated response an
 
 As stated, WebSockets are complicated to fuzz. Their asynchronous, stateful nature breaks the usual assumptions that security tools rely on. 
 
-To work around these challenges, this approach focuses on reliability and clarity. A new WebSocket connection is opened for each payload (to avoid side effects from earlier payloads that might affect the application’s state). If necessary (for example, with Socket.IO implementations), the scanner can wait a bit or send prerequisite messages before injecting the actual payload. Once the payload is sent, all incoming messages are captured during a configurable time window.
+To work around these challenges, this approach focuses on reliability and clarity. A new WebSocket connection is opened for each payload (to avoid side effects from earlier payloads that might affect the application’s state). If necessary (for example, with Socket.IO protocol negotiation), the scanner can wait for a timeout and/or send prerequisite messages before injecting the actual payload. Once the payload is sent, all incoming messages are captured during a configurable time window.
 
-Responses are stored in a structured format, including metadata such as message type (text or binary) and response time. This structured approach simplifies message correlation and enables more accurate behavioral analysis.
+Responses are stored in a structured format, including metadata such as message type (text or binary) and response time. This structured approach enables message correlation and enables more accurate behavioral analysis.
 
 The following visual representation may offer a clearer view:
 <center><img src="/images/ws_mermaid_chart.png" alt="WebSocket fuzzing flow" title="WebSocket fuzzing flow" style="max-width: 60%; height: auto;"></center> <div class="centered" style="text-align: center; font-style: italic;">
@@ -113,12 +115,15 @@ This ensures that WebSocket responses are evaluated based on meaningful attribut
 
 Since Burp's Montoya API is still not as mature for WebSocket traffic as it is for HTTP, it's not yet straightforward to automatically fuzz all fields within a message. That said, some automation was manually implemented and can be expanded in the future. For now, and somewhat as a workaround, usage works as follows:
 
+- Configure the settings as needed.
+    - For simple cases (e.g., sending a message and expecting a single reply), you may only need to set the response capture time window.
+    - For more complex scenarios (e.g., applications using Socket.IO), you may need to send prerequisite messages such as a `40` to complete the protocol handshake, and add a short delay to avoid breaking the connection.
 - Select a WebSocket message and launch the extension.
 - If the message is in JSON or Socket.IO format, the extension will automatically fuzz all fields and JSON escape the payloads.
 - If it's not, you can wrap the desired insertion point with `FUZZ`, and the extension will target that area.
 - If no marker is provided, the extension will fuzz the entire message as a single unit.
 
-In the settings, the user can configure the desired time window (in seconds) for listening to incoming messages. Additionally, it is possible to customize a delay (in milliseconds) before sending the payload, as well as define any prerequisite messages to be sent prior to the payload. If more than one message is required, these should be separated by `FUZZ`.
+In the settings, the response capture time window and, if needed, the delay, should be in milliseconds. If multiple prerequisite messages are needed, they can be separated using the `FUZZ` string.
 
 <center><img src="/images/ws_settings.png" alt="Settings example" title="Settings example" style="max-width: 100%; height: auto;"></center> <div class="centered" style="text-align: center; font-style: italic;">
 
