@@ -7,7 +7,9 @@ toc = true
 display_published = true 
 +++
 
+
 ## [Introduction](#introduction)
+> **TL;DR:** If you're only interested in how to use the tool, you can skip directly to the [Usage and Automation](#usage-and-automation) section.
 
 Since RFC 6455 [[^1]] landed in 2011, WebSockets have become a core part of many real-time applications.
 
