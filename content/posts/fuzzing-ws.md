@@ -53,6 +53,8 @@ As a consequence, existing tools and logic mostly built for HTTP traffic are inn
 
 ## [Brief Discussion of WebSocket Security Tools](#brief-discussion-of-websocket-security-tools)
 
+While not many, some attempts have been made over the years to improve WebSocket security tooling. Other valuable work exists as well, but here I’ll focus specifically on fuzzers.
+
 The first mainstream tool to support WebSocket testing was Zed Attack Proxy (ZAP). R. Koch’s work [[^6]] was foundational, allowing inspection, message tampering, and a basic fuzzer using a custom wordlist. It was a great start, but it lacked the features needed to handle more complex, layered protocols like Socket.IO, that require specific handshake sequences to even get the conversation started. And, like many tools that followed, the results had to be manually analyzed.
 
 A. Riancho [[^7]] and A. Hauser [[^8]] released similar, lightweight fuzzers. They introduced a key feature: support for "pre-messages" to be sent before the actual payload. This was a step in the right direction for stateful communication. However, they mainly target simple JSON-based applications. While you can adapt them for other formats or multi-step handshakes with custom scripting, it makes them clunky and less effective for protocols like Socket.IO out-of-the-box. Hauser’s tool requires manual inspection via a proxy, while Riancho's includes a limited attempt at automated analysis.
