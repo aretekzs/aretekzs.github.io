@@ -1,0 +1,33 @@
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #000000;
+  --bg-light: #464949;
+  --text: #d6d6d6;
+  --text-light: #dbd5bc;
+  --accent: #78b6ad;
+  --accent-light: #87c9e5;
+  --accent-text: var(--bg);
+  --border: #dbd5bc;
+  --link: #87afaf;
+}
+
+:root {
+  --sans-font: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono-font: "JetBrains Mono", monospace; /* Optional: change code font too */
+}
+
+/* Specific paragraph styling */
+p {
+  font-family: var(--sans-font);
+  line-height: 1.6; /* Optional: improve readability */
+  font-size: 1.1rem;
+}
+
+div code, li code, p code {
+    background-color: #333;
+    color: #87afaf;
+}
+
+blockquote {
+    padding: 0 0 0 .5rem;
+}
