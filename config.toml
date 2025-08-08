@@ -1,6 +1,6 @@
 # The URL the site will be built for
-base_url = "https://arete06.com"
-title = "arete"
+base_url = "https://aretekzs.com"
+title = "aretekzs"
 theme = "anemone"
 
 # Whether to automatically compile all Sass files in the sass directory
