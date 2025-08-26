@@ -23,11 +23,16 @@ p {
   font-size: 1.1rem;
 }
 
-div code, li code, p code {
-    background-color: #333;
+div code {
+    background-color: #0c0c0c;
     color: #87afaf;
+}
+
+pre {
+    background-color: #0c0c0c !important;
 }
 
 blockquote {
     padding: 0 0 0 .5rem;
 }
+

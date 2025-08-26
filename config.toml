@@ -10,14 +10,13 @@ compile_sass = false
 build_search_index = false
 
 [markdown]
-# Whether to do syntax highlighting
-# Theme can be customised by setting the `highlight_theme` variable to a theme supported by Zola
-highlight_code = false
+highlight_code = true
+highlight_theme = "base16-ocean-dark"
 
 [extra]
 # Put all your custom variables here
 header_nav = [
     { url = "/", name_en = "/home/" },
-    { url = "/posts", name_en = "/posts/" }
+    # { url = "/posts", name_en = "/posts/" }
 ]
 favicon = "favicon.svg"
