@@ -31,11 +31,12 @@ After having the external sources synced, I started a new chat and queried the m
   <div style="flex: 1; min-width: 45%; text-align: right; margin-left: auto;">
     <img src="/images/ai_ssrf2.png" alt="SSRF" style="max-width: 100%; height: auto;">
   </div>
+
 </div>
 
+ <div class="centered" style="text-align: center; font-style: italic;">
 
-SSRF confirmation 
-</div>
+SSRF</div>
 
 As I was not sure how the target would handle this vulnerability, despite my huge desire to try and escalate the issue, I immediatly stopped all testing and starting trying to contact the support team, hoping to report the vulnerability to them and ask for permission to escalate.
 
