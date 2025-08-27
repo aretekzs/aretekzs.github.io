@@ -12,3 +12,4 @@ Hacker from Portugal. CTF player with [xSTF](https://xstf.pt/).
 ### Contact
 - Email: [aretekzs@tuta.io](mailto:aretekzs@tuta.io)
 - PGP: [32648CF775D2E9](32648CF775D2E9.asc)
+- Twitter: [@aretekzs](https://x.com/aretekzs)
