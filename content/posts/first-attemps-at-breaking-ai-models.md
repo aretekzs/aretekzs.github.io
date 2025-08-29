@@ -1,6 +1,6 @@
 +++
 title = "First Attempts at Breaking AI Models"
-date = 2025-08-28
+date = 2025-08-29
 draft = false
 [extra]
 toc = true
@@ -14,9 +14,11 @@ The issues I found are not deeply technical compared to classical web exploits, 
 
 For disclosure reasons, I will keep screenshots minimal. More details and real chat transcripts may be added later if/when fixes land and disclosure is permitted.
 
+<br>
+
 ## [Vulnerability 1 - SSRF through Chatbot](#vulnerability-1-ssrf-through-chatbot)
 
-This target was an AI chatbot, integrated into an application, designed to provide account insights, automate tasks, intelligent search, chat assistance, and so on. One of its features allowed users to add custom data sources, including files and external URLs, to widen the model's knowledge base.
+This target was an AI chatbot, integrated into an application, designed to provide account insights, automate tasks, search features, and so on. One of its features allowed users to add custom data sources, including files and external URLs, to widen the model's knowledge base.
 
 After confirming that the chatbot would reveal the content of the provided sources, the obvious first thought was to redirect my `poc` domain to an internal endpoint, and add it as a source. 
 

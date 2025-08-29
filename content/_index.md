@@ -6,7 +6,7 @@ title = "aretekzs"
 Hacker from Portugal. CTF player with [xSTF](https://xstf.pt/).
 
 ### Posts
-- 2025-08-28 [First Attempts at Breaking AI Models](/posts/first-attemps-at-breaking-ai-models/)
+- 2025-08-29 [First Attempts at Breaking AI Models](/posts/first-attemps-at-breaking-ai-models/)
 - 2025-04-15 [Fuzzing WebSockets for Server-Side Vulnerabilities](/posts/fuzzing-ws/)
 
 ### Contact
