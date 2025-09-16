@@ -1,6 +1,6 @@
 +++
 title = "First Attempts at Breaking AI Models"
-date = 2025-08-29
+date = 2025-09-17
 draft = false
 [extra]
 toc = true
@@ -26,16 +26,14 @@ By checking which IP was pinging my domain, after adding it as a source, it was 
 
 After having the external sources synced, I started a new chat and queried the model for the content of the newly added source. Initially, the bot was not really cooperating, but after assuring him that the source was completely indexed, synced and available in his data, and providing the full URL of the source, the SSRF confirmation arrived:
 
-<div style="display: flex; gap: 10px; flex-wrap: wrap;">
-  <div style="flex: 1; min-width: 45%; text-align: left; margin-right: auto;">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+  <div>
     <img src="/images/ai_ssrf.png" alt="SSRF" style="max-width: 100%; height: auto;">
   </div>
-  <div style="flex: 1; min-width: 45%; text-align: right; margin-left: auto;">
+  <div>
     <img src="/images/ai_ssrf2.png" alt="SSRF" style="max-width: 100%; height: auto;">
   </div>
-
 </div>
-
  <div class="centered" style="text-align: center; font-style: italic;">
 
 SSRF</div>
@@ -46,6 +44,7 @@ As I was not sure how the target would handle this vulnerability, despite my hug
 - 21/08 - First email sent to security contact.
 - 25/08 - Reached out to the support team, who confirmed the report would be forwarded to the security team and I would get a reply.
 - 27/08 - Report formally submitted and awaiting response.
+- _Still awaiting a response at the time of posting._
 
 <br>
 
@@ -102,6 +101,7 @@ Reporting this issue was also a challenge. After significant effort to find a se
 **Timeline**
 - 26/08 - Vulnerability formally reported via the bug report form (and email).
 - 27/08 - Report acknowledged by the security team and awaiting validation.
+- 06/09 - Issue fixed.
 
 <br>
 
