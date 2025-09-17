@@ -38,7 +38,7 @@ After having the external sources synced, I started a new chat and queried the m
 
 SSRF</div>
 
-As I was not sure how the target would handle this vulnerability, despite my huge desire to try and escalate the issue, I immediatly stopped all testing and starting trying to contact the support team, hoping to report the vulnerability to them and ask for permission to escalate.
+As I was not sure how the target would handle this vulnerability, despite my huge desire to try and escalate the issue, I immediatly stopped all testing and tried to contact the support team, hoping to report the vulnerability to them and ask for permission to escalate.
 
 **Timeline**
 - 21/08 - First email sent to security contact.
