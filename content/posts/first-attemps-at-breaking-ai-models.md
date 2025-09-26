@@ -44,7 +44,7 @@ As I was not sure how the target would handle this vulnerability, despite my hug
 - 21/08 - First email sent to security contact.
 - 25/08 - Reached out to the support team, who confirmed the report would be forwarded to the security team and I would get a reply.
 - 27/08 - Report formally submitted and awaiting response.
-- _Still awaiting a response at the time of posting._
+- 26/09 - Report not accepted due to "no impact", yet the issue was fixed. Coincidentally, the trial period for this feature only was removed, and its price was significantly increased, making further testing unjustifiable.
 
 <br>
 
